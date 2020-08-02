@@ -1,3 +1,39 @@
+Skip to content
+Search or jump to…
+
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@DanielEstrada971102 
+Learn Git and GitHub without any code!
+Using the Hello World guide, you’ll start a branch, write comments, and open a pull request.
+
+
+DanielEstrada971102
+/
+sph
+1
+00
+Code
+Issues
+Pull requests
+Actions
+Projects
+Wiki
+Security
+Insights
+Settings
+sph/sph.c
+@DanielEstrada971102
+DanielEstrada971102 Se borran todos los archivos producidos por el codigo para dejarlo co…
+…
+Latest commit 14f6d15 1 hour ago
+ History
+ 1 contributor
+897 lines (707 sloc)  20.1 KB
+  
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
@@ -152,32 +188,32 @@ void ics(int nx, int ny, double dx, double dy, double Lx, double Ly)
   for( j=0; j<ny; j++)
     {
       for( i=0; i<nx; i++)
-    	{
-    	  part[counter].id = counter;
-    	  part[counter].pos[X] = i*dx+dx/2.0;
-    	  part[counter].pos[Y] = j*dy+dy/2.0;
-    	  part[counter].vel[X] = 0.0;
-    	  part[counter].vel[Y] = 0.0;
-    	  part[counter].accel[X] = 0.0;
-    	  part[counter].accel[Y] = 0.0;
-    	  part[counter].rho = 1000;
-    	  part[counter].h = dx;
-    	  part[counter].mass = part[counter].rho*dx*dy;
-    	  part[counter].p = 0.0;
-    	  part[counter].c = 0.0;
-    	  part[counter].du = 0.0;
-    	  part[counter].u = 357.1;
-    	  part[counter].nn = NULL;
-    	  part[counter].nNeighbors = 0;
-    	  part[counter].dx = NULL;
-    	  part[counter].dy = NULL;
-    	  part[counter].r = NULL;
-    	  part[counter].W = NULL;
-    	  part[counter].dWx = NULL;
-    	  part[counter].dWy = NULL;
-    	  part[counter].type = 1;
-    	  counter++;
-    	}
+      {
+        part[counter].id = counter;
+        part[counter].pos[X] = i*dx+dx/2.0;
+        part[counter].pos[Y] = j*dy+dy/2.0;
+        part[counter].vel[X] = 0.0;
+        part[counter].vel[Y] = 0.0;
+        part[counter].accel[X] = 0.0;
+        part[counter].accel[Y] = 0.0;
+        part[counter].rho = 1000;
+        part[counter].h = dx;
+        part[counter].mass = part[counter].rho*dx*dy;
+        part[counter].p = 0.0;
+        part[counter].c = 0.0;
+        part[counter].du = 0.0;
+        part[counter].u = 357.1;
+        part[counter].nn = NULL;
+        part[counter].nNeighbors = 0;
+        part[counter].dx = NULL;
+        part[counter].dy = NULL;
+        part[counter].r = NULL;
+        part[counter].W = NULL;
+        part[counter].dWx = NULL;
+        part[counter].dWy = NULL;
+        part[counter].type = 1;
+        counter++;
+      }
     }
   
   // ics for boundary particles
@@ -455,12 +491,12 @@ void ics(int nx, int ny, double dx, double dy, double Lx, double Ly)
   for( i=0; i<nPart; i++)
     {
       fprintf(fFluidIcs,"%d %.10lf %.10lf %.10lf %.10lf %.10lf %.10lf %.10lf %.10lf %.10lf %.10lf %.10lf\n",
-	      part[i].id,
-	      part[i].pos[X],part[i].pos[Y],
-	      part[i].vel[X],part[i].vel[Y],
-	      part[i].accel[X],part[i].accel[Y],
-	      part[i].rho,part[i].mass,
-	      part[i].p,part[i].c,part[i].u);
+        part[i].id,
+        part[i].pos[X],part[i].pos[Y],
+        part[i].vel[X],part[i].vel[Y],
+        part[i].accel[X],part[i].accel[Y],
+        part[i].rho,part[i].mass,
+        part[i].p,part[i].c,part[i].u);
     }
 
   fclose(fFluidIcs);
@@ -551,63 +587,63 @@ void NN(int i)
     {
       
       if( i!=j )
-	{
-	  xij = part[i].pos[X] - part[j].pos[X];
-	  yij = part[i].pos[Y] - part[j].pos[Y];
-	  rij = sqrt( xij*xij + yij*yij );
-	  hij = 0.5*(part[i].h+part[j].h);
-	  
-	  
-	  if( rij < kappa*hij  )
-	    {
-	      nNeighbors++;
+  {
+    xij = part[i].pos[X] - part[j].pos[X];
+    yij = part[i].pos[Y] - part[j].pos[Y];
+    rij = sqrt( xij*xij + yij*yij );
+    hij = 0.5*(part[i].h+part[j].h);
+    
+    
+    if( rij < kappa*hij  )
+      {
+        nNeighbors++;
 
-	      // add neighbor id
-	      auxInt = NULL;
-	      auxInt = (int *)realloc(part[i].nn,(size_t)(nNeighbors)*sizeof(int));
-	      part[i].nn = auxInt;
+        // add neighbor id
+        auxInt = NULL;
+        auxInt = (int *)realloc(part[i].nn,(size_t)(nNeighbors)*sizeof(int));
+        part[i].nn = auxInt;
 
-	      // add neighbor dx
-	      auxDouble = NULL;
-	      auxDouble = (double *)realloc(part[i].dx,(size_t)(nNeighbors)*sizeof(double));
-	      part[i].dx = auxDouble;
+        // add neighbor dx
+        auxDouble = NULL;
+        auxDouble = (double *)realloc(part[i].dx,(size_t)(nNeighbors)*sizeof(double));
+        part[i].dx = auxDouble;
 
-	      // add neighbor dy
-	      auxDouble = NULL;
-	      auxDouble = (double *)realloc(part[i].dy,(size_t)(nNeighbors)*sizeof(double));
-	      part[i].dy = auxDouble;
+        // add neighbor dy
+        auxDouble = NULL;
+        auxDouble = (double *)realloc(part[i].dy,(size_t)(nNeighbors)*sizeof(double));
+        part[i].dy = auxDouble;
 
-	      // add neighbor r
-	      auxDouble = NULL;
-	      auxDouble = (double *)realloc(part[i].r,(size_t)(nNeighbors)*sizeof(double));
-	      part[i].r = auxDouble;
-	      
-	      // add neighbor W
-	      auxDouble = NULL;
-	      auxDouble = (double *)realloc(part[i].W,(size_t)(nNeighbors)*sizeof(double));
-	      part[i].W = auxDouble;
+        // add neighbor r
+        auxDouble = NULL;
+        auxDouble = (double *)realloc(part[i].r,(size_t)(nNeighbors)*sizeof(double));
+        part[i].r = auxDouble;
+        
+        // add neighbor W
+        auxDouble = NULL;
+        auxDouble = (double *)realloc(part[i].W,(size_t)(nNeighbors)*sizeof(double));
+        part[i].W = auxDouble;
 
-	      // add neighbor dWx
-	      auxDouble = NULL;
-	      auxDouble = (double *)realloc(part[i].dWx,(size_t)(nNeighbors)*sizeof(double));
-	      part[i].dWx = auxDouble;
+        // add neighbor dWx
+        auxDouble = NULL;
+        auxDouble = (double *)realloc(part[i].dWx,(size_t)(nNeighbors)*sizeof(double));
+        part[i].dWx = auxDouble;
 
-	      // add neighbor dWy
-	      auxDouble = NULL;
-	      auxDouble = (double *)realloc(part[i].dWy,(size_t)(nNeighbors)*sizeof(double));
-	      part[i].dWy = auxDouble;
+        // add neighbor dWy
+        auxDouble = NULL;
+        auxDouble = (double *)realloc(part[i].dWy,(size_t)(nNeighbors)*sizeof(double));
+        part[i].dWy = auxDouble;
 
-	      
-	      part[i].nn[nNeighbors-1] = j;
-	      part[i].dx[nNeighbors-1] = xij;
-	      part[i].dy[nNeighbors-1] = yij;
-	      part[i].r[nNeighbors-1] = rij;
-	      part[i].W[nNeighbors-1] = W( rij, hij ); 
-	      part[i].dWx[nNeighbors-1] = dW( rij, xij, hij);
-	      part[i].dWy[nNeighbors-1] = dW( rij, yij, hij);
-	      
-	    }
-	}
+        
+        part[i].nn[nNeighbors-1] = j;
+        part[i].dx[nNeighbors-1] = xij;
+        part[i].dy[nNeighbors-1] = yij;
+        part[i].r[nNeighbors-1] = rij;
+        part[i].W[nNeighbors-1] = W( rij, hij ); 
+        part[i].dWx[nNeighbors-1] = dW( rij, xij, hij);
+        part[i].dWy[nNeighbors-1] = dW( rij, yij, hij);
+        
+      }
+  }
     }
   part[i].nNeighbors = nNeighbors;
 }
@@ -629,15 +665,15 @@ void test_NN(void)
       printf("with %d neighbors\n",part[i].nNeighbors);
        
       fprintf(fTestNN,"%16d %16.10lf %16.10lf\n",
-	      part[i].id,
-	      part[i].pos[X],
-	      part[i].pos[Y]);
+        part[i].id,
+        part[i].pos[X],
+        part[i].pos[Y]);
       
       for( j=0; j<part[i].nNeighbors; j++ )
-	fprintf(fTestNN,"%16d %16.10lf %16.10lf\n",
-		part[i].nn[j],
-		part[part[i].nn[j]].pos[X],
-		part[part[i].nn[j]].pos[Y]);
+  fprintf(fTestNN,"%16d %16.10lf %16.10lf\n",
+    part[i].nn[j],
+    part[part[i].nn[j]].pos[X],
+    part[part[i].nn[j]].pos[Y]);
       fprintf(fTestNN,"\n");
     }
   fclose(fTestNN);
@@ -658,12 +694,12 @@ void density(void)
 
       // computing density
       for( j=0; j<part[i].nNeighbors; j++ )
-	part[i].rho = part[i].rho + part[part[i].nn[j]].mass*part[i].W[j];
+  part[i].rho = part[i].rho + part[part[i].nn[j]].mass*part[i].W[j];
 
       // normalizing the density
       norm = (part[i].mass/part[i].rho)*wii;
       for( j=0; j<part[i].nNeighbors; j++ )
-	norm = norm + (part[part[i].nn[j]].mass/part[part[i].nn[j]].rho)*part[i].W[j];
+  norm = norm + (part[part[i].nn[j]].mass/part[part[i].nn[j]].rho)*part[i].W[j];
       
       part[i].rho = part[i].rho/norm;
     }
@@ -698,20 +734,20 @@ void navierStokes(void)
       part[i].du = 0.0;
 
       for( k=0; k<part[i].nNeighbors; k++ )
-	{
-	  j = part[i].nn[k];
-	  
-	  pij = ( part[i].p/(part[i].rho*part[i].rho) )
-	    + ( part[j].p/(part[j].rho*part[j].rho) );
-	  part[i].accel[X] = part[i].accel[X] - part[j].mass*pij*part[i].dWx[k];
-	  part[i].accel[Y] = part[i].accel[Y] - part[j].mass*pij*part[i].dWy[k];
-	  
+  {
+    j = part[i].nn[k];
     
-	  vdw = (part[i].vel[X]-part[j].vel[X])*part[i].dWx[k]
-	    + (part[i].vel[Y]-part[j].vel[Y])*part[i].dWy[k];
-	  part[i].du = part[i].du + 0.5*part[j].mass*pij*vdw;
-	  
-	}
+    pij = ( part[i].p/(part[i].rho*part[i].rho) )
+      + ( part[j].p/(part[j].rho*part[j].rho) );
+    part[i].accel[X] = part[i].accel[X] - part[j].mass*pij*part[i].dWx[k];
+    part[i].accel[Y] = part[i].accel[Y] - part[j].mass*pij*part[i].dWy[k];
+    
+    
+    vdw = (part[i].vel[X]-part[j].vel[X])*part[i].dWx[k]
+      + (part[i].vel[Y]-part[j].vel[Y])*part[i].dWy[k];
+    part[i].du = part[i].du + 0.5*part[j].mass*pij*vdw;
+    
+  }
 
     }
   
@@ -733,35 +769,35 @@ void viscosity(double dx)
   for( i=0; i<nFluid; i++ )
     {
       for( k=0; k<part[i].nNeighbors ; k++ )
-	{
-	  
-	  j = part[i].nn[k];
-	  
-	  xij = part[i].pos[X] - part[j].pos[X];
-	  yij = part[i].pos[Y] - part[j].pos[Y];
-	  vxij = part[i].vel[X] - part[j].vel[X];
-	  vyij = part[i].vel[Y] - part[j].vel[Y];
-	  vijrij = vxij*xij + vyij*yij;
-	  
-	  if( vijrij < 0.0 )
-	    {
-	      hij = 0.5*(part[i].h+part[j].h);
-	      phiij = (hij*vijrij)/( xij*xij + yij*yij + eps2);
-	      cij = 0.5*(part[i].c+part[j].c);
-	      rhoij = 0.5*(part[i].rho+part[j].rho);
-	      
-	      Piij = ( -alphapi*cij*phiij + betapi*phiij*phiij )/( rhoij );
+  {
+    
+    j = part[i].nn[k];
+    
+    xij = part[i].pos[X] - part[j].pos[X];
+    yij = part[i].pos[Y] - part[j].pos[Y];
+    vxij = part[i].vel[X] - part[j].vel[X];
+    vyij = part[i].vel[Y] - part[j].vel[Y];
+    vijrij = vxij*xij + vyij*yij;
+    
+    if( vijrij < 0.0 )
+      {
+        hij = 0.5*(part[i].h+part[j].h);
+        phiij = (hij*vijrij)/( xij*xij + yij*yij + eps2);
+        cij = 0.5*(part[i].c+part[j].c);
+        rhoij = 0.5*(part[i].rho+part[j].rho);
+        
+        Piij = ( -alphapi*cij*phiij + betapi*phiij*phiij )/( rhoij );
 
-	      part[i].accel[X] = part[i].accel[X] - part[j].mass*Piij*part[i].dWx[k];
-	      part[i].accel[Y] = part[i].accel[Y] - part[j].mass*Piij*part[i].dWy[k];
+        part[i].accel[X] = part[i].accel[X] - part[j].mass*Piij*part[i].dWx[k];
+        part[i].accel[Y] = part[i].accel[Y] - part[j].mass*Piij*part[i].dWy[k];
 
-	      vdw = (part[i].vel[X]-part[j].vel[X])*part[i].dWx[k]
-		+ (part[i].vel[Y]-part[j].vel[Y])*part[i].dWy[k];
-	      part[i].du = part[i].du + 0.5*part[j].mass*Piij*vdw;
-	      
-	    }
-	  
-	}
+        vdw = (part[i].vel[X]-part[j].vel[X])*part[i].dWx[k]
+    + (part[i].vel[Y]-part[j].vel[Y])*part[i].dWy[k];
+        part[i].du = part[i].du + 0.5*part[j].mass*Piij*vdw;
+        
+      }
+    
+  }
     }
   printf("viscosity computed\n");
 }
@@ -777,24 +813,24 @@ void boundaryInteraction(double dx)
   for( i=0; i<nFluid; i++ )
     {
       for( j=0; j<part[i].nNeighbors; j++ )
-	{
-	  if( part[part[i].nn[j]].type==-1 )
-	    {
-	      xij = part[i].pos[X] - part[part[i].nn[j]].pos[X];
-	      yij = part[i].pos[Y] - part[part[i].nn[j]].pos[Y];
-	      rij = sqrt( xij*xij + yij*yij );
-	      
-	      if( rij<r0 )
-		{
-		  PBxij = D*( pow((r0/rij),n1) - pow((r0/rij),n2) )*(xij/(rij*rij));
-		  PByij = D*( pow((r0/rij),n1) - pow((r0/rij),n2) )*(yij/(rij*rij));
-		  
-		  part[i].accel[X] = part[i].accel[X] + PBxij;
-		  part[i].accel[Y] = part[i].accel[Y] + PByij;
-		  
-		}
-	    }
-	}
+  {
+    if( part[part[i].nn[j]].type==-1 )
+      {
+        xij = part[i].pos[X] - part[part[i].nn[j]].pos[X];
+        yij = part[i].pos[Y] - part[part[i].nn[j]].pos[Y];
+        rij = sqrt( xij*xij + yij*yij );
+        
+        if( rij<r0 )
+    {
+      PBxij = D*( pow((r0/rij),n1) - pow((r0/rij),n2) )*(xij/(rij*rij));
+      PByij = D*( pow((r0/rij),n1) - pow((r0/rij),n2) )*(yij/(rij*rij));
+      
+      part[i].accel[X] = part[i].accel[X] + PBxij;
+      part[i].accel[Y] = part[i].accel[Y] + PByij;
+      
+    }
+      }
+  }
     }
   printf("interaction with boundary computed\n");
 }
@@ -815,13 +851,13 @@ void meanVelocity()
       vyMean = 0.0;
       
       for( j=0; j<part[i].nNeighbors; j++ )
-	{
-	  vxij = part[i].vel[X] - part[part[i].nn[j]].vel[X];
-	  vyij = part[i].vel[Y] - part[part[i].nn[j]].vel[Y];
-	  rhoij = 0.5*(part[i].rho+part[part[i].nn[j]].rho);
-	  vxMean = vxMean + (part[part[i].nn[j]].mass/rhoij)*vxij*part[i].W[j];
-	  vyMean = vyMean + (part[part[i].nn[j]].mass/rhoij)*vyij*part[i].W[j];
-	}
+  {
+    vxij = part[i].vel[X] - part[part[i].nn[j]].vel[X];
+    vyij = part[i].vel[Y] - part[part[i].nn[j]].vel[Y];
+    rhoij = 0.5*(part[i].rho+part[part[i].nn[j]].rho);
+    vxMean = vxMean + (part[part[i].nn[j]].mass/rhoij)*vxij*part[i].W[j];
+    vyMean = vyMean + (part[part[i].nn[j]].mass/rhoij)*vyij*part[i].W[j];
+  }
 
       part[i].vel[X] = part[i].vel[X] - epsilon*vxMean;
       part[i].vel[Y] = part[i].vel[Y] - epsilon*vyMean;
@@ -884,14 +920,15 @@ void printState(char *outfile)
   for( i=0; i<nPart; i++)
     {
       fprintf(fState,"%d %.10lf %.10lf %.10lf %.10lf %.10lf %.10lf %.10lf %.10lf %.10lf %.10lf %.10lf\n",
-	      part[i].id,
-	      part[i].pos[X],part[i].pos[Y],
-	      part[i].vel[X],part[i].vel[Y],
-	      part[i].accel[X],part[i].accel[Y],
-	      part[i].rho,part[i].mass,
-	      part[i].p,part[i].c,part[i].u);
+        part[i].id,
+        part[i].pos[X],part[i].pos[Y],
+        part[i].vel[X],part[i].vel[Y],
+        part[i].accel[X],part[i].accel[Y],
+        part[i].rho,part[i].mass,
+        part[i].p,part[i].c,part[i].u);
     }
   
   fclose(fState);
 
 }
+

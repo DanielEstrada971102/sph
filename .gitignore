@@ -1,2 +1,3 @@
 *.output
-/output/*
+modificado/output/*
+original/output/*
