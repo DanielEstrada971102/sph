@@ -7,6 +7,7 @@
 #define X 0
 #define Y 1
 
+
 typedef struct
 {
   int id;
@@ -57,7 +58,7 @@ int main(int argc, char *argv[])
 
   int i, nx, ny, counter;
   double Lx, Ly, dx, dy;
-  double dt = 0.5e-5;
+  double dt = .5e-5;
   double t, tTotal = 4000*dt;
 
   char outfiles[500];
@@ -95,38 +96,38 @@ int main(int argc, char *argv[])
   while( t<=tTotal )
     {
 
-      // searching near neighbors for all fuid particles
-      for( i=0; i<nFluid; i++ )
-	NN(i);
+    // searching near neighbors for all fuid particles
+    for( i=0; i<nFluid; i++ )
+      NN(i);
 
-      // testing near neighbors searching
-      if(counter==0)
-	test_NN();
-      
-      // computing density
-      density();
-      
-      // drift in leap-frog integration
-      drift(dt);
+    // testing near neighbors searching
+    if(counter==0)
+      test_NN();
+    
+    // computing density
+    density();
+    
+    // drift in leap-frog integration
+    drift(dt);
 
-      // computing acceleration
-      acceleration(dx);  
+    // computing acceleration
+    acceleration(dx);  
 
-      // kick in leap-frog integration
-      kick(dt);
-      
-      // drift in leap-frog integration
-      drift(dt);
-	
-      t = t + dt;
-      counter++;
+    // kick in leap-frog integration
+    kick(dt);
+    
+    // drift in leap-frog integration
+    drift(dt);
 
-      // printting system state
-      sprintf(outfiles,"./output/state_%.4d",counter);
-      printState(outfiles);
+    t = t + dt;
+    counter++;
 
-      printf("step = %d \n",counter);
-      
+    // printting system state
+    sprintf(outfiles,"./output/state_%.4d",counter);
+    printState(outfiles);
+
+    printf("step = %d \n",counter);
+    
     }
 
   printf("final - %p %p\n",part,auxPart);
@@ -151,38 +152,38 @@ void ics(int nx, int ny, double dx, double dy, double Lx, double Ly)
   for( j=0; j<ny; j++)
     {
       for( i=0; i<nx; i++)
-	{
-	  part[counter].id = counter;
-	  part[counter].pos[X] = i*dx+dx/2.0;
-	  part[counter].pos[Y] = j*dy+dy/2.0;
-	  part[counter].vel[X] = 0.0;
-	  part[counter].vel[Y] = 0.0;
-	  part[counter].accel[X] = 0.0;
-	  part[counter].accel[Y] = 0.0;
-	  part[counter].rho = 1000;
-	  part[counter].h = dx;
-	  part[counter].mass = part[counter].rho*dx*dy;
-	  part[counter].p = 0.0;
-	  part[counter].c = 0.0;
-	  part[counter].du = 0.0;
-	  part[counter].u = 357.1;
-	  part[counter].nn = NULL;
-	  part[counter].nNeighbors = 0;
-	  part[counter].dx = NULL;
-	  part[counter].dy = NULL;
-	  part[counter].r = NULL;
-	  part[counter].W = NULL;
-	  part[counter].dWx = NULL;
-	  part[counter].dWy = NULL;
-	  part[counter].type = 1;
-	  counter++;
-	}
+    	{
+    	  part[counter].id = counter;
+    	  part[counter].pos[X] = i*dx+dx/2.0;
+    	  part[counter].pos[Y] = j*dy+dy/2.0;
+    	  part[counter].vel[X] = 0.0;
+    	  part[counter].vel[Y] = 0.0;
+    	  part[counter].accel[X] = 0.0;
+    	  part[counter].accel[Y] = 0.0;
+    	  part[counter].rho = 1000;
+    	  part[counter].h = dx;
+    	  part[counter].mass = part[counter].rho*dx*dy;
+    	  part[counter].p = 0.0;
+    	  part[counter].c = 0.0;
+    	  part[counter].du = 0.0;
+    	  part[counter].u = 357.1;
+    	  part[counter].nn = NULL;
+    	  part[counter].nNeighbors = 0;
+    	  part[counter].dx = NULL;
+    	  part[counter].dy = NULL;
+    	  part[counter].r = NULL;
+    	  part[counter].W = NULL;
+    	  part[counter].dWx = NULL;
+    	  part[counter].dWy = NULL;
+    	  part[counter].type = 1;
+    	  counter++;
+    	}
     }
   
   // ics for boundary particles
 
   // speed in boundary
-  double vBoundary = 1.0e-2; 
+  double vBoundary = 1.0e-1; 
   
   int npVirtI = 320;
   int npV = npVirtI/4;
@@ -467,6 +468,8 @@ void ics(int nx, int ny, double dx, double dy, double Lx, double Ly)
   
 }
 
+
+// POR QUE USA ESA W----------------------------------------------------------  
 double W(double r, double h)
 {
   
@@ -504,6 +507,7 @@ double dW(double r, double dx, double h)
   
   return 0.0;
 }
+
 
 void testKernel(void)
 {
@@ -702,6 +706,7 @@ void navierStokes(void)
 	  part[i].accel[X] = part[i].accel[X] - part[j].mass*pij*part[i].dWx[k];
 	  part[i].accel[Y] = part[i].accel[Y] - part[j].mass*pij*part[i].dWy[k];
 	  
+    
 	  vdw = (part[i].vel[X]-part[j].vel[X])*part[i].dWx[k]
 	    + (part[i].vel[Y]-part[j].vel[Y])*part[i].dWy[k];
 	  part[i].du = part[i].du + 0.5*part[j].mass*pij*vdw;
@@ -793,6 +798,7 @@ void boundaryInteraction(double dx)
     }
   printf("interaction with boundary computed\n");
 }
+
 
 void meanVelocity()
 {
