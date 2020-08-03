@@ -1,39 +1,3 @@
-Skip to content
-Search or jump to…
-
-Pull requests
-Issues
-Marketplace
-Explore
- 
-@DanielEstrada971102 
-Learn Git and GitHub without any code!
-Using the Hello World guide, you’ll start a branch, write comments, and open a pull request.
-
-
-DanielEstrada971102
-/
-sph
-1
-00
-Code
-Issues
-Pull requests
-Actions
-Projects
-Wiki
-Security
-Insights
-Settings
-sph/sph.c
-@DanielEstrada971102
-DanielEstrada971102 Se borran todos los archivos producidos por el codigo para dejarlo co…
-…
-Latest commit 14f6d15 1 hour ago
- History
- 1 contributor
-897 lines (707 sloc)  20.1 KB
-  
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
@@ -94,7 +58,7 @@ int main(int argc, char *argv[])
 
   int i, nx, ny, counter;
   double Lx, Ly, dx, dy;
-  double dt = .5e-5;
+  double dt = 5e-5;
   double t, tTotal = 4000*dt;
 
   char outfiles[500];
@@ -219,7 +183,7 @@ void ics(int nx, int ny, double dx, double dy, double Lx, double Ly)
   // ics for boundary particles
 
   // speed in boundary
-  double vBoundary = 1.0e-1; 
+  double vBoundary = 1.0e-2; 
   
   int npVirtI = 320;
   int npV = npVirtI/4;
