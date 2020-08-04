@@ -63,14 +63,14 @@ int main(int argc, char *argv[])
   int i, nx, ny, counter;
   double Lx, Ly, dx, dy;
   double dt = .5e-5;
-  double t, tTotal = 4000*dt;
+  double t, tTotal = 400*dt;
 
   char outfiles[500];
   
-  nx = 40;
-  ny = 40;
-  Lx = 1e-3;
-  Ly = 1e-3;
+  nx = 64;
+  ny = 64;
+  Lx = 1;
+  Ly = 1;
 
   dx = Lx/nx;
   dy = Ly/ny;
@@ -188,9 +188,9 @@ void ics(int nx, int ny, double dx, double dy, double Lx, double Ly)
   // ics for boundary particles
 
   // speed in boundary
-  double vBoundary = 0; //1.0e-1; 
+  double vBoundary = 1e-1; 
   
-  int npVirtI = 320;
+  int npVirtI = 512;
   int npV = npVirtI/4;
   
   // bottom border, 81 points
@@ -990,9 +990,9 @@ void viscosity_modified(double dx){
 
 void initial_velocity(int counter, double Lx, double Ly){
 
-  double L_ref_x = Lx/4;
-  double L_ref_y = Ly/4;
-  double Vo = 1.0e-1;
+  double L_ref_x = Lx/2;
+  double L_ref_y = Ly/8;
+  double Vo = .6;
 
   part[counter].vel[X] = -1 * Vo * cos(2 * M_PI *  part[counter].pos[X] / L_ref_x) * 
                         sin(2 * M_PI *  part[counter].pos[Y] / L_ref_x);

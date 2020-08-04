@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 
   int i, nx, ny, counter;
   double Lx, Ly, dx, dy;
-  double dt = 5e-5;
+  double dt = .5e-5;
   double t, tTotal = 4000*dt;
 
   char outfiles[500];
@@ -183,7 +183,7 @@ void ics(int nx, int ny, double dx, double dy, double Lx, double Ly)
   // ics for boundary particles
 
   // speed in boundary
-  double vBoundary = 1.0e-2; 
+  double vBoundary = 1.0e-1; 
   
   int npVirtI = 320;
   int npV = npVirtI/4;
