@@ -2,7 +2,7 @@
 
 lim = 4000
 retardo = 0.00001
-f = 0.01
+f = 1
 
 nPart = 64
 

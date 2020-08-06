@@ -188,7 +188,7 @@ void ics(int nx, int ny, double dx, double dy, double Lx, double Ly)
   // ics for boundary particles
 
   // speed in boundary
-  double vBoundary = 1e-1; 
+  double vBoundary = 0; 
   
   int npVirtI = 512;
   int npV = npVirtI/4;
@@ -838,10 +838,10 @@ void acceleration(double dx)
 {
 
   // computing acceleration and change of energy
-  navierStokes_modified(); // modification is used 
+  navierStokes(); // modification is used 
   
   // computing viscosity contribution
-  viscosity_modified(dx); // modification is used 
+  viscosity(dx); // modification is used 
   
   // computing interaction with boundary
   boundaryInteraction(dx);
@@ -990,9 +990,9 @@ void viscosity_modified(double dx){
 
 void initial_velocity(int counter, double Lx, double Ly){
 
-  double L_ref_x = Lx/2;
-  double L_ref_y = Ly/8;
-  double Vo = .6;
+  double L_ref_x = Lx/4;
+  double L_ref_y = Ly/4;
+  double Vo = 5e-1;
 
   part[counter].vel[X] = -1 * Vo * cos(2 * M_PI *  part[counter].pos[X] / L_ref_x) * 
                         sin(2 * M_PI *  part[counter].pos[Y] / L_ref_x);
