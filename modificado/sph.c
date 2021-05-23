@@ -29,6 +29,7 @@ typedef struct
   double *W;
   double *dWx;
   double *dWy;
+  double curl;
   int type;
 }Particles;
 
@@ -56,19 +57,20 @@ void printState(char *outfile);
 void navierStokes_modified(void);
 void viscosity_modified(double dx);
 void initial_velocity(int counter, double Lx, double Ly);
+void curl(void);
 
 int main(int argc, char *argv[])
 {
 
   int i, nx, ny, counter;
   double Lx, Ly, dx, dy;
-  double dt = .5e-5;
-  double t, tTotal = 400*dt;
+  double dt = 5e-5;
+  double t, tTotal = 1000*dt;
 
   char outfiles[500];
   
-  nx = 64;
-  ny = 64;
+  nx = 30;
+  ny = 30;
   Lx = 1;
   Ly = 1;
 
@@ -188,13 +190,16 @@ void ics(int nx, int ny, double dx, double dy, double Lx, double Ly)
   // ics for boundary particles
 
   // speed in boundary
-  double vBoundary = 0; 
+  double vBoundary = 5e-1; 
   
-  int npVirtI = 512;
-  int npV = npVirtI/4;
+  //int npVirtI = 2 * ( 2 * nx + 2 * ny);
+  //int npV = npVirtI/4;
+  int npV_bt = 2 * nx;
+  int npV_rl = 2 * ny;
+
   
   // bottom border, 81 points
-  bBorder = (double **)malloc((size_t)(npV+1)*sizeof(double *)); // pointers to rows
+  bBorder = (double **)malloc((size_t)(npV_bt+1)*sizeof(double *)); // pointers to rows
   if( bBorder==NULL )
     {
       printf("Error alocando bBorder\n");
@@ -211,7 +216,7 @@ void ics(int nx, int ny, double dx, double dy, double Lx, double Ly)
   printf("0 - %p %p\n",part,auxPart);
   printf("0 - %lu %lu\n",sizeof(part),sizeof(auxPart));
     
-  auxPart = (Particles *)realloc(part,(size_t)(nPart+npV+1)*sizeof(Particles));
+  auxPart = (Particles *)realloc(part,(size_t)(nPart+npV_bt+1)*sizeof(Particles));
   if(auxPart==NULL)
     {
       printf("error en auxPart\n");
@@ -229,7 +234,7 @@ void ics(int nx, int ny, double dx, double dy, double Lx, double Ly)
   
   counter = nPart;
     
-  for( i=0; i<=npV; i++)
+  for( i=0; i<=npV_bt; i++)
     {
       bBorder[i] = (double *)malloc((size_t)(2)*sizeof(double)); // columns for matriz
       bBorder[i][X] = i*dx/2.0;
@@ -265,7 +270,7 @@ void ics(int nx, int ny, double dx, double dy, double Lx, double Ly)
   fclose(fbBorder);
   
   // right border, 79 points
-  rBorder = (double **)malloc((size_t)(npV-1)*sizeof(double *)); // pointers to rows
+  rBorder = (double **)malloc((size_t)(npV_rl-1)*sizeof(double *)); // pointers to rows
   if( rBorder==NULL )
     {
       printf("Error alocando rBorder\n");
@@ -280,7 +285,7 @@ void ics(int nx, int ny, double dx, double dy, double Lx, double Ly)
   
   auxPart = NULL;
     
-  auxPart = (Particles *)realloc(part,(size_t)(nPart+npV-1)*sizeof(Particles));
+  auxPart = (Particles *)realloc(part,(size_t)(nPart+npV_rl-1)*sizeof(Particles));
   if(auxPart==NULL)
     {
       printf("error en auxPart\n");
@@ -292,7 +297,7 @@ void ics(int nx, int ny, double dx, double dy, double Lx, double Ly)
       auxPart = NULL;
     }
     
-  for( i=0; i<npV-1; i++)
+  for( i=0; i<npV_rl-1; i++)
     {
       rBorder[i] = (double *)malloc((size_t)(2)*sizeof(double)); // columns for matriz
       rBorder[i][X] = Lx;
@@ -328,7 +333,7 @@ void ics(int nx, int ny, double dx, double dy, double Lx, double Ly)
   fclose(frBorder);
   
   // top border, 81 points
-  tBorder = (double **)malloc((size_t)(npV+1)*sizeof(double *)); // pointers to rows
+  tBorder = (double **)malloc((size_t)(npV_bt+1)*sizeof(double *)); // pointers to rows
   if( tBorder==NULL )
     {
       printf("Error alocando tBorder\n");
@@ -343,7 +348,7 @@ void ics(int nx, int ny, double dx, double dy, double Lx, double Ly)
   
   auxPart = NULL;
   
-  auxPart = (Particles *)realloc(part,(size_t)(nPart+npV+1)*sizeof(Particles));
+  auxPart = (Particles *)realloc(part,(size_t)(nPart+npV_bt+1)*sizeof(Particles));
   if(auxPart==NULL)
     {
       printf("error en auxPart\n");
@@ -355,7 +360,7 @@ void ics(int nx, int ny, double dx, double dy, double Lx, double Ly)
       auxPart = NULL;
     }
       
-  for( i=0; i<=npV; i++)
+  for( i=0; i<=npV_bt; i++)
     {
       tBorder[i] = (double *)malloc((size_t)(2)*sizeof(double)); // columns for matriz
       tBorder[i][X] = i*dx/2.0;
@@ -391,7 +396,7 @@ void ics(int nx, int ny, double dx, double dy, double Lx, double Ly)
   fclose(ftBorder);
   
   // left border, 79 points
-  lBorder = (double **)malloc((size_t)(npV-1)*sizeof(double *)); // pointers to rows
+  lBorder = (double **)malloc((size_t)(npV_rl-1)*sizeof(double *)); // pointers to rows
   if( lBorder==NULL )
     {
       printf("Error alocando lBorder\n");
@@ -406,7 +411,7 @@ void ics(int nx, int ny, double dx, double dy, double Lx, double Ly)
   
   auxPart = NULL;
     
-  auxPart = (Particles *)realloc(part,(size_t)(nPart+npV-1)*sizeof(Particles));
+  auxPart = (Particles *)realloc(part,(size_t)(nPart+npV_rl-1)*sizeof(Particles));
   if(auxPart==NULL)
     {
       printf("error en auxPart\n");
@@ -418,7 +423,7 @@ void ics(int nx, int ny, double dx, double dy, double Lx, double Ly)
       auxPart = NULL;
     }
   
-  for( i=0; i<npV-1; i++)
+  for( i=0; i<npV_rl-1; i++)
     {
       lBorder[i] = (double *)malloc((size_t)(2)*sizeof(double)); // columns for matriz
       lBorder[i][X] = 0.0;
@@ -952,7 +957,8 @@ void viscosity_modified(double dx){
   int i, j, k;
   double vdw, Aij;
   double dvc_eta = 8.9e-4; // dynamic viscosity coefficient
-  double xij, yij, rij;
+  double xi, xj, xij, yi, yj, yij,  ri, rj, rij;
+  double cos_ij, sin_ij, dWr;
   // computing sound speed and pression
   eos();
 
@@ -963,18 +969,29 @@ void viscosity_modified(double dx){
     
       j = part[i].nn[k];
 
+      xi = part[i].pos[X];
+      yi = part[i].pos[Y];
+      xj = part[j].pos[X];
+      yj = part[j].pos[Y];
+      ri = sqrt(xi * xi + yi * yi);
+      rj = sqrt(xj * xj + yj * yj);
 
-      xij = part[i].pos[X] - part[j].pos[X];
-      yij = part[i].pos[Y] - part[j].pos[Y];
+      xij = xi - xj;
+      yij = yi - yj;
       rij = sqrt( xij*xij + yij*yij );
+
+      cos_ij = sqrt(xi * xj +  yi * yj) / ( ri * rj);
+      sin_ij = sqrt(1 - cos_ij * cos_ij);
+
+      dWr = cos_ij * part[i].dWx[k] + sin_ij * part[i].dWy[k];
 
       Aij = (part[i].mass*part[i].mass)/(part[i].rho*part[i].rho) + 
             (part[j].mass*part[j].mass)/(part[j].rho*part[j].rho);
 
       part[i].accel[X] = part[i].accel[X] - (dvc_eta/part[i].mass) * Aij * 
-                        (part[i].vel[X] - part[j].vel[X])/rij * part[i].dWx[k];
+                        (part[i].vel[X] - part[j].vel[X])/rij * dWr;
       part[i].accel[Y] = part[i].accel[Y] - (dvc_eta/part[i].mass) * Aij * 
-                        (part[i].vel[Y] - part[j].vel[Y])/rij * part[i].dWy[k];
+                        (part[i].vel[Y] - part[j].vel[Y])/rij * dWr;
 
 
       // the energy wasn't modified---------
@@ -990,12 +1007,18 @@ void viscosity_modified(double dx){
 
 void initial_velocity(int counter, double Lx, double Ly){
 
-  double L_ref_x = Lx/4;
-  double L_ref_y = Ly/4;
+  double L_ref_x = Lx/2;
+  double L_ref_y = Ly/2;
   double Vo = 5e-1;
 
   part[counter].vel[X] = -1 * Vo * cos(2 * M_PI *  part[counter].pos[X] / L_ref_x) * 
                         sin(2 * M_PI *  part[counter].pos[Y] / L_ref_x);
   part[counter].vel[Y] = Vo * cos(2 * M_PI *  part[counter].pos[Y] / L_ref_y) * 
                         sin(2 * M_PI *  part[counter].pos[X] / L_ref_y); 
+}
+
+void curl(void){
+  // for(int i=0; i<nFluid; i++){
+  // }
+
 }

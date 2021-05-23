@@ -1,3 +1,5 @@
 *.output
 modificado/output/*
 original/output/*
+modificado/output_900/*
+modificado/output_4096/*
